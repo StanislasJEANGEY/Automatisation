@@ -1,0 +1,48 @@
+version: '3'
+networks:
+  immo-project.net:
+    driver: bridge
+services:
+  php:
+    image: 'canals/php:latest'
+    volumes:
+      - ./immo-project/api/public:/var/www/html
+      - ./immo-project/api:/var/www
+    ports:
+      - '8000:80'
+    networks:
+        immo-project.net:
+
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - '3306:3306'
+    networks:
+        - immo-project.net
+
+  node:
+    image: 'node:latest'
+    volumes:
+      - ./immo-project/front_admin:/usr/src/app
+    ports:
+      - '3000:3000'
+    working_dir: /usr/src/app
+    command: bash -c "npm install && npm run dev"
+    networks:
+        - immo-project.net
+
+  node2:
+    image: 'node:latest'
+    volumes:
+      - ./immo-project/front_client:/usr/src/app
+    ports:
+      - '3001:3000'
+    working_dir: /usr/src/app
+    command: bash -c "npm install && npm run dev"
+    networks:
+        - immo-project.net
