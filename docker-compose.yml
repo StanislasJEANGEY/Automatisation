@@ -10,6 +10,7 @@ services:
       - ./immo-project/api:/var/www
     ports:
       - '8000:80'
+    working_dir: /var/www/
     networks:
         immo-project.net:
 
@@ -33,6 +34,8 @@ services:
       - '3000:3000'
     working_dir: /usr/src/app
     command: bash -c "npm install && npm run dev"
+    environment:
+        - VITE_API_URL=http://localhost:8000/api
     networks:
         - immo-project.net
 
@@ -44,5 +47,14 @@ services:
       - '3001:3000'
     working_dir: /usr/src/app
     command: bash -c "npm install && npm run dev"
+    environment:
+      - VITE_API_URL=http://localhost:8000/api
     networks:
         - immo-project.net
+
+  adminer:
+    image: adminer
+    ports:
+      - '18077:8080'
+    networks:
+      - immo-project.net
